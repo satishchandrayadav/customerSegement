@@ -9,7 +9,7 @@
       "customer_dim": {
         "db_name": "sales_dev",
         "table_name": "customer",
-        "table_location": "/salesDWH/customerDim"
+        "table_location": "/salesDWH/dev/customerDim"
       },
       "product_detail": {
         "db_name": "sales_dev",
@@ -35,12 +35,12 @@
       "country_dim": {
         "db_name": "sales_dev",
         "table_name": "store_master",
-        "table_location": "/salesDWH/countryDim"
+        "table_location": "/salesDWH/dev/countryDim"
       },
       "product_dim": {
         "db_name": "sales_dev",
         "table_name": "product",
-        "table_location": "/salesDWH/productDim"
+        "table_location": "/salesDWH/dev/productDim"
       },
       "sales_detail": {
         "db_name": "sales_dev",
@@ -50,12 +50,12 @@
       "agg_monthly_sales": {
         "db_name": "sales_dev",
         "table_name": "agg_monthly_sales",
-        "table_location": "/salesDWH/salesFact"
+        "table_location": "/salesDWH/dev/salesFact"
       },
       "sales_fact": {
         "db_name": "sales_dev",
         "table_name": "sales",
-        "table_location": "/salesDWH/salesFact"
+        "table_location": "/salesDWH/dev/salesFact"
       }
     }
   },
@@ -69,7 +69,7 @@
       "customer_dim": {
         "db_name": "sales_prod",
         "table_name": "customer",
-        "table_location": "/salesDWH/customerDim"
+        "table_location": "/salesDWH/prod/customerDim"
       },
       "product_detail": {
         "db_name": "sales_prod",
@@ -90,17 +90,17 @@
       "country_detail": {
         "db_name": "sales_prod",
         "table_name": "store_master",
-        "table_location": "/sourceData/country_code.csv"
+        "table_location": "/sourceData/prod/country_code.csv"
       },
       "country_dim": {
         "db_name": "sales_prod",
         "table_name": "store_master",
-        "table_location": "/salesDWH/countryDim"
+        "table_location": "/salesDWH/prod/countryDim"
       },
       "product_dim": {
         "db_name": "sales_prod",
         "table_name": "product",
-        "table_location": "/salesDWH/productDim"
+        "table_location": "/salesDWH/prod/productDim"
       },
       "sales_detail": {
         "db_name": "sales_prod",
@@ -110,12 +110,12 @@
       "agg_monthly_sales": {
         "db_name": "sales_prod",
         "table_name": "agg_monthly_sales",
-        "table_location": "/salesDWH/salesFact"
+        "table_location": "/salesDWH/prod/salesFact"
       },
       "sales_fact": {
         "db_name": "sales_prod",
         "table_name": "sales",
-        "table_location": "/salesDWH/salesFact"
+        "table_location": "/salesDWH/prod/salesFact"
       }
     }
   }
