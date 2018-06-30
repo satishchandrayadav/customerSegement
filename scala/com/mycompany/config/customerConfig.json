@@ -50,7 +50,7 @@
       "agg_monthly_sales": {
         "db_name": "sales_dev",
         "table_name": "agg_monthly_sales",
-        "table_location": "/salesDWH/dev/salesFact"
+        "table_location": "/salesDWH/dev/salesMonthlyAggregatebyCustomer"
       },
       "sales_fact": {
         "db_name": "sales_dev",
