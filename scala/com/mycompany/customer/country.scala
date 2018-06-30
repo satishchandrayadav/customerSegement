@@ -1,13 +1,10 @@
 package com.mycompany
 
 import java.io.File
-
-import org.apache.spark.SparkContext._
 import com.mycompany.utils.InitSpark
-import org.apache.spark.sql.{DataFrame, DataFrameNaFunctions}
 
 class country extends InitSpark {
-  val sourceDataPath = spark.read.option("multiline",true)
+  val countrySourceDataPath = spark.read.option("multiline",true)
     .json("/customerSegment/src/main/scala/com/mycompany/config/customerConfig.json")
     .select(s"${deployment_environment}.tables.country_detail.table_location")
     .rdd
@@ -15,7 +12,7 @@ class country extends InitSpark {
     .mkString(" ")
     .replaceAll("[\\[\\]]","")
 
-  val savePath = spark.read.option("multiline",true)
+  val countryDimSavePath = spark.read.option("multiline",true)
     .json("/customerSegment/src/main/scala/com/mycompany/config/customerConfig.json")
     .select(s"${deployment_environment}.tables.country_dim.table_location")
     .rdd
@@ -23,7 +20,7 @@ class country extends InitSpark {
     .mkString(" ")
     .replaceAll("[\\[\\]]","")
 
-  val files = List(sourceDataPath)
+  val files = List(countrySourceDataPath)
   for ( i <- files)
     if (new File(i).exists()) {
       println(s"$i exist")
@@ -36,11 +33,11 @@ class country extends InitSpark {
 
 
 
-  println(s"input table path : $sourceDataPath")
-  println(s"output table path : $savePath")
+  println(s"input table path : $countrySourceDataPath")
+  println(s"output table path : $countryDimSavePath")
 
 
-  val sourceData = reader.csv(sourceDataPath)
+  val countrySourceData = reader.csv(countrySourceDataPath)
 
   //    close
 

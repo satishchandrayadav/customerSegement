@@ -7,6 +7,6 @@ import com.mycompany.utils.writeToCSVwdHeader
 object countryDriverProgram {
   def main(args: Array[String]) = {
     val countryObj = new country
-    val w = writeToCSVwdHeader.writeToCSV(countryObj.sourceData ,countryObj.savePath)
+    val writeCountryDim = writeToCSVwdHeader.writeToCSV(countryObj.countrySourceData ,countryObj.countryDimSavePath)
   }
 }
