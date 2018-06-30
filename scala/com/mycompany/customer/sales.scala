@@ -2,8 +2,8 @@ package com.mycompany
 
 import java.io.File
 
-
 import com.mycompany.utils.InitSpark
+import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions._
 
 
@@ -12,7 +12,7 @@ class sales extends InitSpark {
   /** **********************Get table path from Config file start *************************/
 
 
-  val sourceDataPath = spark.read.option("multiline", true)
+  val saleSourceDataPath = spark.read.option("multiline", true)
     .json("/customerSegment/src/main/scala/com/mycompany/config/customerConfig.json")
     .select(s"${deployment_environment}.tables.sales_detail.table_location")
     .rdd
@@ -21,7 +21,7 @@ class sales extends InitSpark {
     .replaceAll("[\\[\\]]", "")
 
 
-  val savePath = spark.read.option("multiline", true)
+  val salesSavePath = spark.read.option("multiline", true)
     .json("/customerSegment/src/main/scala/com/mycompany/config/customerConfig.json")
     .select(s"${deployment_environment}.tables.sales_fact.table_location")
     .rdd
@@ -94,7 +94,7 @@ class sales extends InitSpark {
 
   /** **************************load tables start ************************************************/
 
-  val sourceData = reader.csv(sourceDataPath)
+  val sourceData = reader.csv(saleSourceDataPath)
   val productDim = reader.csv(productDimPath)
   val customerDim = reader.csv(customerDimPath)
   val monthDim = reader.csv(monthDimPath)
@@ -103,12 +103,10 @@ class sales extends InitSpark {
 
   /** **************************load tables end ************************************************/
 
-  def monthlyAggregateSalesByCustomer(): Unit = {
+  def monthlyAggregateSalesByCustomer(): DataFrame = {
 
     val aggSalesData = sourceData.select("DT", "CUST_ID", "PROD_ID", "PROD_TYPE", "REVENUE")
       .groupBy("DT", "CUST_ID", "PROD_ID").agg(sum("REVENUE").alias("REVENUE"))
-
-    monthDim.show()
 
 
     val aggSalesDataByPeriod = aggSalesData.join(monthDim,
@@ -117,21 +115,21 @@ class sales extends InitSpark {
       agg(sum("REVENUE").alias("REVENUE")).select("CUST_ID", "PROD_ID", "REVENUE", "MONTH_ID")
 
 
-    aggSalesDataByPeriod.show()
-
 
     val aggSalesDataByProductGroup = aggSalesDataByPeriod.join(productDim, "PROD_ID").select("CUST_ID",
       "PROD_GROUP", "REVENUE", "MONTH_ID")
 
     val aggSalesDataByCustomer = aggSalesDataByProductGroup.join(customerDim, "CUST_ID").select("CUST_ID",
-      "PROD_GROUP", "CUST_GROUP", "CUST_SEGMENT", "PAYMENT_MODE", "REVENUE", "MONTH_ID")
+      "PROD_GROUP", "CUST_GROUP", "CUST_SEGMENT", "REVENUE", "MONTH_ID")
 
-    val outputData = aggSalesDataByCustomer.coalesce(1).write.mode("overwrite").option("header", "true")
-      .csv(savePath)
+/*   val outputData = aggSalesDataByCustomer.coalesce(1).write.mode("overwrite").option("header", "true")
+      .csv(salesSavePath)*/
+
+    return aggSalesDataByCustomer
 
   }
 
-  def calculateCustomerSegmentBasedOnTransVolume(): Unit = {
+  def calculateCustomerSegmentBasedOnTransVolume(): DataFrame = {
     val methodName = Thread.currentThread().getStackTrace()(1).getMethodName()
     println("executing methodName = " + methodName)
     val aggMonthlySales = reader.csv(aggMonthlySalesPath)
@@ -139,7 +137,7 @@ class sales extends InitSpark {
     transactionThreshold.createOrReplaceTempView("transThres")
     aggMonthlySales.createOrReplaceTempView("aggSalesByCust")
 
-    val df = sqlContext.sql(
+    val df  = sqlContext.sql(
       """select a.*,
                               case when a.REVENUE between b.THRESHOLD_RANGE1 and b.THRESHOLD_RANGE2
                               then b.CUSTOMER_TRANS_TYPE else "VHTV" end as CUSTOMER_TRANSACTION_SEGMENT
@@ -150,6 +148,7 @@ class sales extends InitSpark {
                                 and
                               a.REVENUE between b.THRESHOLD_RANGE1 and b.THRESHOLD_RANGE2""")
 
-
+  return df
   }
+
 }

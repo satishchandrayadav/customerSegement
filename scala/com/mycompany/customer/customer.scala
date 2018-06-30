@@ -5,7 +5,7 @@ import org.apache.spark.sql.DataFrame
 
 class customer extends InitSpark {
 
-  val sourceDataPath: String = spark.read.option("multiline", value = true)
+  val customerSourceDataPath: String = spark.read.option("multiline", value = true)
     .json("/customerSegment/src/main/scala/com/mycompany/config/customerConfig.json")
     .select(s"${deployment_environment}.tables.customer_detail.table_location")
     .rdd
@@ -14,7 +14,7 @@ class customer extends InitSpark {
     .replaceAll("[\\[\\]]", "")
 
 
-  val savePath: String = spark.read.option("multiline", value = true)
+  val customerSavePath: String = spark.read.option("multiline", value = true)
     .json("/customerSegment/src/main/scala/com/mycompany/config/customerConfig.json")
     .select(s"${deployment_environment}.tables.customer_dim.table_location")
     .rdd
@@ -23,16 +23,14 @@ class customer extends InitSpark {
     .replaceAll("[\\[\\]]", "")
 
 
-  println(s"input table path : $sourceDataPath")
-  println(s"input table path : $savePath")
+  println(s"input table path : $customerSourceDataPath")
+  println(s"input table path : $customerSavePath")
 
 
-  val sourceData: DataFrame = reader.csv(sourceDataPath)
-  val outputData: Unit = sourceData.write.mode("overwrite").option("header", "true")
-    .csv(savePath)
+  val customerSourceData: DataFrame = reader.csv(customerSourceDataPath)
 
   //  close spark application
-  close
+//  close
 
   elapsedTime
 

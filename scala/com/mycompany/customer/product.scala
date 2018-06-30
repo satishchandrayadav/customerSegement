@@ -4,7 +4,7 @@ import com.mycompany.utils.InitSpark
 
 class product extends InitSpark {
 
-  val sourceDataPath = spark.read.option("multiline",true)
+  val productSourceDataPath = spark.read.option("multiline",true)
     .json("/customerSegment/src/main/scala/com/mycompany/config/customerConfig.json")
     .select(s"${deployment_environment}.tables.product_detail.table_location")
     .rdd
@@ -12,7 +12,7 @@ class product extends InitSpark {
     .mkString(" ")
     .replaceAll("[\\[\\]]","")
 
-  val savePath = spark.read.option("multiline",true)
+  val productSavePath = spark.read.option("multiline",true)
     .json("/customerSegment/src/main/scala/com/mycompany/config/customerConfig.json")
     .select(s"${deployment_environment}.tables.product_dim.table_location")
     .rdd
@@ -21,13 +21,11 @@ class product extends InitSpark {
     .replaceAll("[\\[\\]]","")
 
 
-  println(s"input table path : $sourceDataPath")
-  println(s"output table path : $savePath")
+  println(s"input table path : $productSourceDataPath")
+  println(s"output table path : $productSavePath")
 
 
-  val sourceData = reader.csv(sourceDataPath)
-  val outputData = sourceData.write.mode("overwrite").option("header", "true")
-    .csv(savePath)
+  val productSourceData = reader.csv(productSourceDataPath)
 
 }
 
