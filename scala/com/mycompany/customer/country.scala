@@ -1,9 +1,10 @@
 package com.mycompany
 
 import java.io.File
-import org.apache.spark.SparkContext._
 
+import org.apache.spark.SparkContext._
 import com.mycompany.utils.InitSpark
+import org.apache.spark.sql.{DataFrame, DataFrameNaFunctions}
 
 class country extends InitSpark {
   val sourceDataPath = spark.read.option("multiline",true)
@@ -41,14 +42,11 @@ class country extends InitSpark {
 
   val sourceData = reader.csv(sourceDataPath)
 
-  val outputData = sourceData.write.mode("overwrite").option("header", "true")
-    .csv(savePath)
-    //    close
+  //    close
 
 
 
   elapsedTime
-
   //    mailer.send(envelope)
 }
 

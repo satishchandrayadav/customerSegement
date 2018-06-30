@@ -31,11 +31,8 @@ class customer extends InitSpark {
   val outputData: Unit = sourceData.write.mode("overwrite").option("header", "true")
     .csv(savePath)
 
-  //    sourceData.show(2)
-
   //  close spark application
   close
-
 
   elapsedTime
 
@@ -43,12 +40,3 @@ class customer extends InitSpark {
 
 }
 
-
-//uncomment the below code to run customer module independently
-
-/*
-object customer  {
- def main(args: Array[String]) = {
-   val customer = new customer
- }
-}*/
