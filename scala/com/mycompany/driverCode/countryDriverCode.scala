@@ -2,11 +2,11 @@ package com.mycompany.drivercode
 
 
 import com.mycompany.country
-import com.mycompany.utils.writeToCsvWdHeader
+import com.mycompany.utils.writeToCSVwdHeader
 
 object countryDriverProgram {
   def main(args: Array[String]) = {
     val countryObj = new country
-    val w = writeToCsvWdHeader.writeToCSV(countryObj.sourceData ,countryObj.savePath)
+    val w = writeToCSVwdHeader.writeToCSV(countryObj.sourceData ,countryObj.savePath)
   }
 }

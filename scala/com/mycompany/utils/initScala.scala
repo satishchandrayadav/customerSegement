@@ -23,6 +23,7 @@ trait InitSpark  {
   val sc = spark.sparkContext
 
   val sqlContext = spark.sqlContext
+
   var startDate = Calendar.getInstance().getTime
 
   sc.addSparkListener(new SparkListener() {
