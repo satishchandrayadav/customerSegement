@@ -2,7 +2,7 @@ package com.mycompany.utils
 
 
 import org.apache.log4j.{Level, LogManager, Logger}
-import org.apache.spark.scheduler.{SparkListener, SparkListenerApplicationEnd, SparkListenerApplicationStart, SparkListenerJobEnd}
+import org.apache.spark.scheduler.{SparkListenerStageCompleted, _}
 import org.apache.spark.sql.SparkSession
 
 /* date */
@@ -37,9 +37,29 @@ trait InitSpark  {
       println("program ends")
     }
 
+    var recordsWrittenCount = sc.longAccumulator("recordsWrittenCount")
+
+
+    override def onTaskEnd(taskEnd: SparkListenerTaskEnd) {
+      var recordsWrittenCount = 0L
+      synchronized {
+
+        recordsWrittenCount += taskEnd.taskMetrics.outputMetrics.recordsWritten
+      }
+      val insertCount = s"${recordsWrittenCount}"
+      println(s"recordcount : ${recordsWrittenCount}")
+    }
+
+
     override def onJobEnd(jobEnd: SparkListenerJobEnd): Unit = {
       println(s"[ ${jobEnd.jobId} ] Job completed with Result : ${jobEnd.jobResult}")
+    }
 
+    override def  onStageSubmitted(SparkListenerStageSubmitted : SparkListenerStageSubmitted): Unit = {
+      println(s"[Stage Name : ${SparkListenerStageSubmitted.stageInfo}] Stage submitted : ${SparkListenerStageSubmitted.stageInfo}")
+    }
+    override def onStageCompleted(SparkListenerStageCompleted: SparkListenerStageCompleted): Unit = {
+      println(s"[ ${SparkListenerStageCompleted.stageInfo} ] Job completed with Result : ${SparkListenerStageCompleted.stageInfo}")
     }
 
   });
