@@ -12,6 +12,7 @@ class country extends InitSpark {
     .mkString(" ")
     .replaceAll("[\\[\\]]","")
 
+
   val countryDimSavePath = spark.read.option("multiline",true)
     .json("/customerSegment/src/main/scala/com/mycompany/config/customerConfig.json")
     .select(s"${deployment_environment}.tables.country_dim.table_location")
@@ -19,6 +20,7 @@ class country extends InitSpark {
     .collect()
     .mkString(" ")
     .replaceAll("[\\[\\]]","")
+  var insertCount = sc.longAccumulator("recordsWrittenCount").value
 
   val files = List(countrySourceDataPath)
   for ( i <- files)
@@ -38,6 +40,8 @@ class country extends InitSpark {
 
 
   val countrySourceData = reader.csv(countrySourceDataPath)
+
+
 
   //    close
 
