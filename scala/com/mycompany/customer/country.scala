@@ -1,6 +1,9 @@
 package com.mycompany
 
 import java.io.File
+import java.sql.Date
+import java.text.SimpleDateFormat
+
 import com.mycompany.utils.InitSpark
 
 class country extends InitSpark {
@@ -20,7 +23,18 @@ class country extends InitSpark {
     .collect()
     .mkString(" ")
     .replaceAll("[\\[\\]]","")
-  var insertCount = sc.longAccumulator("recordsWrittenCount").value
+
+  val jobMetricsWritePath = spark.read.option("multiline",true)
+    .json("/customerSegment/src/main/scala/com/mycompany/config/customerConfig.json")
+    .select(s"${deployment_environment}.tables.job_metrics.table_location")
+    .rdd
+    .collect()
+    .mkString(" ")
+    .replaceAll("[\\[\\]]","")
+
+
+  var loadDate = new Date(2018,12,1)
+
 
   val files = List(countrySourceDataPath)
   for ( i <- files)
@@ -40,7 +54,7 @@ class country extends InitSpark {
 
 
   val countrySourceData = reader.csv(countrySourceDataPath)
-
+      countrySourceData.cache()
 
 
   //    close

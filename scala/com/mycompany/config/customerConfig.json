@@ -52,6 +52,11 @@
         "table_name": "agg_monthly_sales",
         "table_location": "/salesDWH/dev/salesMonthlyAggregatebyCustomer"
       },
+      "job_metrics": {
+        "db_name": "sales_dev",
+        "table_name": "job_metrics",
+        "table_location": "/salesDWH/dev/job_metrics"
+      },
       "sales_fact": {
         "db_name": "sales_dev",
         "table_name": "sales",
