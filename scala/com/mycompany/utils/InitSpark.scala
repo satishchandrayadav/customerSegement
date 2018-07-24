@@ -1,10 +1,13 @@
 package com.mycompany.utils
 
 
+
+
 import org.apache.log4j.{Level, LogManager, Logger}
 import org.apache.spark.scheduler.{SparkListenerStageCompleted, _}
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.{DataFrame, Row, SparkSession}
+import org.joda.time.DateTimeFieldType
 
 
 /* date */
@@ -26,7 +29,7 @@ trait InitSpark  {
 
   val sqlContext = spark.sqlContext
 
-  var startDate = Calendar.getInstance().getTime
+  var startDate : Date = Calendar.getInstance().getTime
 
   sc.addSparkListener(new SparkListener() {
     override def onApplicationStart(applicationStart: SparkListenerApplicationStart) {
@@ -39,11 +42,13 @@ trait InitSpark  {
       println("program ends")
     }
 
+
+
+
     var recordsWrittenCount = sc.longAccumulator("recordsWrittenCount")
 
-/*
-var writeInsertCount = 0L
-*/
+
+
 
     override def onTaskEnd(taskEnd: SparkListenerTaskEnd) {
       var recordsWrittenCount = 0L
@@ -72,6 +77,19 @@ var writeInsertCount = 0L
 
   val deployment_environment = "sales_dev"
 
+  import sqlContext.implicits._
+
+ /* val loadDate = sc.parallelize(Seq("08-26-2016"))*/
+  val loadDate = "08-26-2016"
+ /* loadDate.createOrReplaceTempView("table1")
+  val loadDate1 :DataFrame = spark.sql("""select from_unixtime(unix_timestamp(Id, 'MM-dd-yyyy')) as new_format from table1""")
+  loadDate1.show()*/
+
+
+  println(s"loading date : ${loadDate}")
+
+  /*var loadDate = new Date(2018,12,1)*/
+
 
   def reader = spark.read
     .option("header",true)
@@ -94,7 +112,7 @@ var writeInsertCount = 0L
     spark.stop()
   }
 
-  def getJobMetrics (programName: String, inputCount : String, insertCount : Long ,status :String ,loadDate : Date ,
+  def getJobMetrics (programName: String, inputCount : String, insertCount : Long ,status :String ,loadDate : String ,
                      jobMetricsWritePath: String ) {
     val createDataForDF = Seq(
       Row(programName, inputCount,insertCount,status,loadDate)
@@ -104,8 +122,8 @@ var writeInsertCount = 0L
       StructField("inputCount", StringType, true),
       StructField("insertCount", LongType, true),
       StructField("status", StringType, true),
-      StructField("loadDate", DateType, true)
-    )
+      StructField("loadDate", StringType, true)
+          )
 
     val JobMetricsDF = spark.createDataFrame(
       spark.sparkContext.parallelize(createDataForDF),
@@ -116,6 +134,8 @@ var writeInsertCount = 0L
 
 
       }
+
+
 
   def elapsedTime = {
     var endDate = Calendar.getInstance().getTime
