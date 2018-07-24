@@ -4,8 +4,10 @@ import scala.sys.process.Process
 
 object utilToCountInputData {
   def getInputDataCount (inputDataPath : String) : String =  {
-    val inputPath : String = Process(s"wc -l ${inputDataPath}").!!
+
+    try {val inputPath : String = Process(s"wc -l ${inputDataPath}").!!
     val inputDataCount : String = inputPath.split(" ")(0)
     return inputDataCount
   }
-}
+  catch {case e: java.lang.RuntimeException => ("Couldn't find that file 0")}
+}}
