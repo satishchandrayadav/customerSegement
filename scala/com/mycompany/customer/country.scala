@@ -1,10 +1,11 @@
 package com.mycompany
 
 import java.io.File
-import java.sql.Date
-import java.text.SimpleDateFormat
+import java.sql.{Time, Timestamp}
+import java.util.Calendar
 
 import com.mycompany.utils.InitSpark
+import org.apache.spark.sql.DataFrame
 
 class country extends InitSpark {
   val countrySourceDataPath = spark.read.option("multiline",true)
@@ -33,16 +34,13 @@ class country extends InitSpark {
     .replaceAll("[\\[\\]]","")
 
 
-  var loadDate = new Date(2018,12,1)
-
-
   val files = List(countrySourceDataPath)
   for ( i <- files)
     if (new File(i).exists()) {
       println(s"$i exist")
     } else {
       println(s"$i file does not exist")
-      System.exit(1)
+   /*   System.exit(1)*/
     }
 
 
@@ -52,16 +50,18 @@ class country extends InitSpark {
   println(s"input table path : $countrySourceDataPath")
   println(s"output table path : $countryDimSavePath")
 
-
-  val countrySourceData = reader.csv(countrySourceDataPath)
+def readSourceData (inputFile :String) : DataFrame = {
+  val countrySourceData = reader.csv(inputFile)
       countrySourceData.cache()
-
+}
 
   //    close
+  countrySourceDataPath
 
 
 
   elapsedTime
+  var endDate   = Calendar.getInstance().getTime
   //    mailer.send(envelope)
 }
 
