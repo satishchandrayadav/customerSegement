@@ -69,6 +69,15 @@ class sales extends InitSpark {
     .mkString(" ")
     .replaceAll("[\\[\\]]", "")
 
+
+  val jobMetricsWritePath = spark.read.option("multiline",true)
+    .json("/customerSegment/src/main/scala/com/mycompany/config/customerConfig.json")
+    .select(s"${deployment_environment}.tables.job_metrics.table_location")
+    .rdd
+    .collect()
+    .mkString(" ")
+    .replaceAll("[\\[\\]]","")
+
   /** **********************Get table path from Config file end *************************/
 
   /*************************Check file existence Start***************************************/

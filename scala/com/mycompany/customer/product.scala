@@ -1,6 +1,7 @@
 package com.mycompany
 
 import com.mycompany.utils.InitSpark
+import org.apache.spark.sql.DataFrame
 
 class product extends InitSpark {
 
@@ -21,11 +22,25 @@ class product extends InitSpark {
     .replaceAll("[\\[\\]]","")
 
 
+  val jobMetricsWritePath = spark.read.option("multiline",true)
+    .json("/customerSegment/src/main/scala/com/mycompany/config/customerConfig.json")
+    .select(s"${deployment_environment}.tables.job_metrics.table_location")
+    .rdd
+    .collect()
+    .mkString(" ")
+    .replaceAll("[\\[\\]]","")
+
+
   println(s"input table path : $productSourceDataPath")
   println(s"output table path : $productSavePath")
 
+  def readSourceData (inputFile :String) : DataFrame = {
+    val sourceData = reader.csv(inputFile)
+    sourceData.cache()
 
-  val productSourceData = reader.csv(productSourceDataPath)
+  }
+
+
 
 }
 

@@ -1,45 +1,64 @@
 package com.mycompany.drivercode
 
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.{Failure, Success}
-import scala.util.Random
+import java.io.{FileNotFoundException, IOException}
+import java.sql.Timestamp
+import java.text.SimpleDateFormat
 
-import java.sql.Date
-
+import scala.util.control.NonFatal
+import java.util.{Calendar, Date}
 
 import com.mycompany.country
 import com.mycompany.utils.utilToWriteToCSVwdHeader
 import com.mycompany.utils.utilToCountInputData
+import org.apache.spark.sql.{AnalysisException, DataFrame}
+import org.apache.spark.sql.types.DateType
+import org.joda.time.DateTimeFieldType
 
 object countryDriverProgram {
   def main(args: Array[String]) = {
 
     val countryObj = new country
 
-    val writeCountryDim = utilToWriteToCSVwdHeader.writeToCSV(countryObj.countrySourceData ,countryObj.countryDimSavePath)
-
-    val writeCount = countryObj.countrySourceData.count()
-
-    val inputData = s"${countryObj.countrySourceDataPath}"
-        println(s"Name of the insert file: ${inputData}")
-
-    val inputDataCount = utilToCountInputData.getInputDataCount(inputData)
+    val fileName = countryObj.countrySourceDataPath
 
     val programName = new Exception().getStackTrace.head.getFileName
-        println(s"Count of records in input file: ${inputDataCount}")
 
-    val status : String = "S"
+    try {
+      val inputData = s"${countryObj.countrySourceDataPath}"
+      println(s"Name of the insert file: ${inputData}")
 
-        countryObj.getJobMetrics(programName: String, inputDataCount : String, writeCount : Long  ,status :String ,
-          countryObj.loadDate :Date ,
-      countryObj.jobMetricsWritePath: String)
-    val status1 : String = "S"
+      val inputDataCount = utilToCountInputData.getInputDataCount(inputData)
+
+
+      val countrySourceData = countryObj.readSourceData(countryObj.countrySourceDataPath)
+
+      val writeCountryDim = utilToWriteToCSVwdHeader.writeToCSV(countrySourceData, countryObj.countryDimSavePath)
+
+      val writeCount = countrySourceData.count()
+
+
+      val status: String = "S"
+
+      countryObj.getJobMetrics(programName: String, inputDataCount: String, writeCount: Long, status: String,
+        countryObj.loadDate: String,
+        countryObj.jobMetricsWritePath: String)
+
+
+    }
+    catch {
+
+      case e: IOException => e.printStackTrace
+      case e: IllegalArgumentException => println("illegal arg. exception");
+      case e: AnalysisException => println(s"IO exception file not found ${fileName} ")
+
+      case e: FileNotFoundException => println("Couldn't find that file.")
+      case NonFatal(_) => println("Ooops. Much better, only the non fatal exceptions end up here.")
+
+    }
+    finally {
+      println("Running finally block")
+
+    }
+
   }
 }
-
-
-//status.onComplete {
-//  case Success(value) => println(s"Got the callback, meaning = $value")
-//  case Failure(e) => e.printStackTrace
-//}

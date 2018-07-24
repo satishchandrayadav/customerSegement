@@ -27,7 +27,22 @@ class customer extends InitSpark {
   println(s"input table path : $customerSavePath")
 
 
-  val customerSourceData: DataFrame = reader.csv(customerSourceDataPath)
+
+  val jobMetricsWritePath = spark.read.option("multiline",true)
+    .json("/customerSegment/src/main/scala/com/mycompany/config/customerConfig.json")
+    .select(s"${deployment_environment}.tables.job_metrics.table_location")
+    .rdd
+    .collect()
+    .mkString(" ")
+    .replaceAll("[\\[\\]]","")
+
+
+  def readSourceData (inputFile :String) : DataFrame = {
+    val sourceData = reader.csv(inputFile)
+    sourceData.cache()
+
+  }
+
 
   //  close spark application
 //  close
