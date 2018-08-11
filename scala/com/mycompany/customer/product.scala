@@ -34,13 +34,6 @@ class product extends InitSpark {
   println(s"input table path : $productSourceDataPath")
   println(s"output table path : $productSavePath")
 
-  def readSourceData (inputFile :String) : DataFrame = {
-    val sourceData = reader.csv(inputFile)
-    sourceData.cache()
-
-  }
-
-
 
 }
 

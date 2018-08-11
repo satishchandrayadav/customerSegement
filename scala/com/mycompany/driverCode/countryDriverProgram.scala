@@ -25,12 +25,15 @@ object countryDriverProgram {
 
     try {
       val inputData = s"${countryObj.countrySourceDataPath}"
-      println(s"Name of the insert file: ${inputData}")
+      println(s"Name of the input file: ${inputData}")
 
-      val inputDataCount = utilToCountInputData.getInputDataCount(inputData)
 
 
       val countrySourceData = countryObj.readSourceData(countryObj.countrySourceDataPath)
+
+      val inputDataCount = countrySourceData.count()
+      println(s"Input file count : ${inputDataCount}")
+
 
       val writeCountryDim = utilToWriteToCSVwdHeader.writeToCSV(countrySourceData, countryObj.countryDimSavePath)
 
@@ -39,7 +42,7 @@ object countryDriverProgram {
 
       val status: String = "S"
 
-      countryObj.getJobMetrics(programName: String, inputDataCount: String, writeCount: Long, status: String,
+      countryObj.getJobMetrics(programName: String, inputDataCount:Long , writeCount: Long, status: String,
         countryObj.loadDate: String,
         countryObj.jobMetricsWritePath: String)
 
@@ -50,9 +53,8 @@ object countryDriverProgram {
       case e: IOException => e.printStackTrace
       case e: IllegalArgumentException => println("illegal arg. exception");
       case e: AnalysisException => println(s"IO exception file not found ${fileName} ")
-
-      case e: FileNotFoundException => println("Couldn't find that file.")
-      case NonFatal(_) => println("Ooops. Much better, only the non fatal exceptions end up here.")
+      /*case e: FileNotFoundException => println("Couldn't find that file.")*/
+      /*case NonFatal(_) => println("Ooops. Much better, only the non fatal exceptions end up here.")*/
 
     }
     finally {

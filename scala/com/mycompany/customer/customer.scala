@@ -37,11 +37,6 @@ class customer extends InitSpark {
     .replaceAll("[\\[\\]]","")
 
 
-  def readSourceData (inputFile :String) : DataFrame = {
-    val sourceData = reader.csv(inputFile)
-    sourceData.cache()
-
-  }
 
 
   //  close spark application

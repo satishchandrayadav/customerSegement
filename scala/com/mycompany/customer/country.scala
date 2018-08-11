@@ -50,14 +50,8 @@ class country extends InitSpark {
   println(s"input table path : $countrySourceDataPath")
   println(s"output table path : $countryDimSavePath")
 
-def readSourceData (inputFile :String) : DataFrame = {
-  val countrySourceData = reader.csv(inputFile)
-      countrySourceData.cache()
-}
 
   //    close
-  countrySourceDataPath
-
 
 
   elapsedTime
