@@ -18,9 +18,13 @@ object monthSalesDriverProgram  {
 
     try {
       val inputData = s"${salesObj.saleSourceDataPath}"
-      println(s"Name of the insert file: ${inputData}")
+      println(s"Name of the input file: ${inputData}")
 
-      val inputDataCount = utilToCountInputData.getInputDataCount(inputData)
+
+      val saleSourceDataPath = salesObj.readSourceData(salesObj.saleSourceDataPath)
+
+      val inputDataCount = saleSourceDataPath.count()
+      println(s"Input file count : ${inputDataCount}")
 
     val salesAgg = salesObj.monthlyAggregateSalesByCustomer()
     val writemonthlyAggregateSalesByCustomer = utilToWriteToCSVwdHeader.writeToCSV(salesAgg :DataFrame ,salesObj.aggMonthlySalesPath)
@@ -33,7 +37,7 @@ object monthSalesDriverProgram  {
 
       val status: String = "S"
 
-      salesObj.getJobMetrics(programName: String, inputDataCount: String, writeCount: Long, status: String,
+      salesObj.getJobMetrics(programName: String, inputDataCount: Long, writeCount: Long, status: String,
         salesObj.loadDate: String,
         salesObj.jobMetricsWritePath: String)
     }
@@ -43,7 +47,7 @@ object monthSalesDriverProgram  {
       case e: IllegalArgumentException => println("illegal arg. exception");
       case e: AnalysisException => println(s"IO exception file not found ${fileName} ")
 
-      case e: FileNotFoundException => println("Couldn't find that file.")
+      /*case e: FileNotFoundException => println("Couldn't find that file.")*/
       case NonFatal(_) => println("Ooops. Much better, only the non fatal exceptions end up here.")
 
     }

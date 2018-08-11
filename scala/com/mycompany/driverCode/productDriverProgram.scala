@@ -18,9 +18,11 @@ object productDriverProgram {
       val inputData = s"${productObj.productSourceDataPath}"
       println(s"Name of the insert file: ${inputData}")
 
-      val inputDataCount = utilToCountInputData.getInputDataCount(inputData)
+
 
       val productSourceData = productObj.readSourceData(productObj.productSourceDataPath)
+
+      val inputDataCount = productSourceData.count()
 
       val writeProductDim = utilToWriteToCSVwdHeader.writeToCSV(productSourceData ,productObj.productSavePath)
 
@@ -29,7 +31,7 @@ object productDriverProgram {
 
       val status: String = "S"
 
-      productObj.getJobMetrics(programName: String, inputDataCount: String, writeCount: Long, status: String,
+      productObj.getJobMetrics(programName: String, inputDataCount: Long, writeCount: Long, status: String,
         productObj.loadDate: String,
         productObj.jobMetricsWritePath: String)
   }
@@ -39,7 +41,7 @@ object productDriverProgram {
       case e: IllegalArgumentException => println("illegal arg. exception");
       case e: AnalysisException => println(s"IO exception file not found ${fileName} ")
 
-      case e: FileNotFoundException => println("Couldn't find that file.")
+      /*case e: FileNotFoundException => println("Couldn't find that file.")*/
       case NonFatal(_) => println("Ooops. Much better, only the non fatal exceptions end up here.")
 
     }

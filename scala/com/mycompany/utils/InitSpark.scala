@@ -17,7 +17,7 @@ import java.util.{Calendar, Date}
 
 trait InitSpark  {
   val spark: SparkSession = SparkSession.builder()
-    .appName("Spark example")
+    .appName("Customer Segment")
     .master("local[*]")
     .config("option", "some-value")
     /*Since Hive is not installed, this property is not required. */
@@ -25,7 +25,16 @@ trait InitSpark  {
     .getOrCreate()
 
 
+
   val sc = spark.sparkContext
+
+
+/* Add hadoop configuration*/
+
+  val hadoopConf = sc.hadoopConfiguration
+  hadoopConf.set("fs.s3.impl", "org.apache.hadoop.fs.s3native.NativeS3FileSystem")
+
+
 
   val sqlContext = spark.sqlContext
 
@@ -46,6 +55,10 @@ trait InitSpark  {
 
 
     var recordsWrittenCount = sc.longAccumulator("recordsWrittenCount")
+
+
+
+
 
 
 
@@ -75,7 +88,7 @@ trait InitSpark  {
 */
   });
 
-  val deployment_environment = "sales_dev"
+  val deployment_environment = "sales_dev_cloud"
 
   import sqlContext.implicits._
 
@@ -112,14 +125,14 @@ trait InitSpark  {
     spark.stop()
   }
 
-  def getJobMetrics (programName: String, inputCount : String, insertCount : Long ,status :String ,loadDate : String ,
+  def getJobMetrics (programName: String, inputCount : Long, insertCount : Long ,status :String ,loadDate : String ,
                      jobMetricsWritePath: String ) {
     val createDataForDF = Seq(
       Row(programName, inputCount,insertCount,status,loadDate)
     )
     val TableSchema = List(
       StructField("programName", StringType, true),
-      StructField("inputCount", StringType, true),
+      StructField("inputCount", LongType, true),
       StructField("insertCount", LongType, true),
       StructField("status", StringType, true),
       StructField("loadDate", StringType, true)
@@ -135,6 +148,11 @@ trait InitSpark  {
 
       }
 
+  def readSourceData (inputFile :String) : DataFrame = {
+    val sourceData = reader.csv(inputFile)
+    sourceData.cache()
+
+  }
 
 
   def elapsedTime = {
