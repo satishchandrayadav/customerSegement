@@ -60,6 +60,10 @@ object countryDriverProgram {
     finally {
       println("Running finally block")
 
+      countryObj.elapsedTime
+      countryObj.closeSpark
+
+
     }
 
   }
