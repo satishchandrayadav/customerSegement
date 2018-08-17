@@ -48,6 +48,7 @@ object productDriverProgram {
     finally {
       println("Running finally block")
 
+      productObj.closeSpark
     }
 
   }

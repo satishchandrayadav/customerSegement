@@ -53,7 +53,8 @@ object monthSalesDriverProgram  {
     }
     finally {
       println("Running finally block")
-
+      salesObj.elapsedTime
+      salesObj.closeSpark
     }
 
   }
