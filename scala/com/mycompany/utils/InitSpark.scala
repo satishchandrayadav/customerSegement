@@ -1,32 +1,52 @@
 package com.mycompany.utils
-
-
-
-
 import org.apache.log4j.{Level, LogManager, Logger}
 import org.apache.spark.scheduler.{SparkListenerStageCompleted, _}
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.{DataFrame, Row, SparkSession}
-import org.joda.time.DateTimeFieldType
+import java.util.{Calendar, Date, Properties}
 
-
-/* date */
-import java.text.SimpleDateFormat
-import java.util.{Calendar, Date}
-
+import org.apache.hadoop.yarn.util.RackResolver
+import org.apache.log4j.{Level, Logger}
+import org.apache.log4j.PropertyConfigurator
 
 trait InitSpark  {
   val spark: SparkSession = SparkSession.builder()
     .appName("Customer Segment")
     .master("local[*]")
-    .config("option", "some-value")
+    .config("log4j.configuration", "file:///root/spark-2.3.0-bin-hadoop2.7/conf/log4j.propertiessome-value")
     /*Since Hive is not installed, this property is not required. */
     /*.enableHiveSupport() /*to enable support for Hive */ */
     .getOrCreate()
 
+/*
+  PropertyConfigurator.configure("/root/spark-2.3.0-bin-hadoop2.7/conf/log4j.properties")
+*/
+
+  spark.conf.set("spark.executor.memory", "2g")
+
+
+/*But the used compression codec can make a difference. Most codecs somehow represent a trade off between
+  the memory they use, the time they need and the size of the compressed data. So far I had good experiences with "lz4".
+*/
+
+  spark.conf.set("spark.io.compression.codec", "lz4")
+  spark.conf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+  spark.conf.set("spark.kryo.registrationRequired", "true")
+  spark.conf.set("spark.kryoserializer.buffer.mb","24")
+
+/*
+  spark.conf.set("log4j.configuration", "/root/spark-2.3.0-bin-hadoop2.7/conf")
+
+*/
 
 
   val sc = spark.sparkContext
+
+  /* setting log configuration*/
+  sc.setLogLevel("OFF")
+  Logger.getLogger(classOf[RackResolver]).getLevel
+  Logger.getLogger("org").setLevel(Level.OFF)
+
 
 
 /* Add hadoop configuration*/
@@ -50,8 +70,6 @@ trait InitSpark  {
       //println("Spark ApplicationEnd: " + FinalApplicationStatus.FAILED)
       println("program ends")
     }
-
-
 
 
     var recordsWrittenCount = sc.longAccumulator("recordsWrittenCount")
@@ -88,15 +106,16 @@ trait InitSpark  {
 */
   });
 
-  val deployment_environment = "sales_dev_cloud"
+  val deployment_environment = "sales_dev"
 
   import sqlContext.implicits._
 
  /* val loadDate = sc.parallelize(Seq("08-26-2016"))*/
   val loadDate = "08-26-2016"
- /* loadDate.createOrReplaceTempView("table1")
-  val loadDate1 :DataFrame = spark.sql("""select from_unixtime(unix_timestamp(Id, 'MM-dd-yyyy')) as new_format from table1""")
-  loadDate1.show()*/
+
+  /* loadDate.createOrReplaceTempView("table1")
+   val loadDate1 :DataFrame = spark.sql("""select from_unixtime(unix_timestamp(Id, 'MM-dd-yyyy')) as new_format from table1""")
+   loadDate1.show()*/
 
 
   println(s"loading date : ${loadDate}")
@@ -121,7 +140,7 @@ trait InitSpark  {
     LogManager.getRootLogger.setLevel(Level.ERROR)
   }
   init
-  def close = {
+  def closeSpark = {
     spark.stop()
   }
 
@@ -169,22 +188,6 @@ trait InitSpark  {
 
     println(s"Time elapsed : ${diffDays} : ${diffHours} : ${diffMinutes} : ${diffSeconds}")
   }
-  //  class ExampleClass extends EnvelopeWrappers {
-  //    val config = SmtpConfiguration("localhost", 25)
-  //    val mailer = Mailer(config)
-  //    val content = Multipart(
-  //      parts = Seq(Text("text"), Html("<p>text</p>")),
-  //      subType = MultipartTypes.alternative
-  //    )
-  //
-  //    val envelope = Envelope(
-  //      from = "from@localhost.com",
-  //      to = Seq("chandrasatish2009@gmail.com"),
-  //      subject = "test",
-  //      content = content
-  //    )
-  //
-  //    mailer.send(envelope)
-  //  }
+
 
 }
