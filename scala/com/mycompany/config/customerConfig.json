@@ -1,0 +1,192 @@
+{
+  "sales_dev": {
+    "tables": {
+      "customer_detail": {
+        "db_name": "sales_dev",
+        "table_name": "customer",
+        "table_location": "/sourceData/customer.csv"
+      },
+      "customer_dim": {
+        "db_name": "sales_dev",
+        "table_name": "customer",
+        "table_location": "/salesDWH/dev/customerDim"
+      },
+      "product_detail": {
+        "db_name": "sales_dev",
+        "table_name": "product",
+        "table_location": "/sourceData/product.csv"
+      },
+      "month_dim": {
+        "db_name": "sales_dev",
+        "table_name": "product",
+        "table_location": "/sourceData/month.csv"
+      },
+      "transaction_threshold": {
+        "db_name": "sales_dev",
+        "table_name": "transactionThreshold",
+        "table_location": "/sourceData/transaction_threshold.csv"
+      },
+
+      "country_detail": {
+        "db_name": "sales_dev",
+        "table_name": "store_master",
+        "table_location": "/sourceData/country_code.csv"
+      },
+      "country_dim": {
+        "db_name": "sales_dev",
+        "table_name": "store_master",
+        "table_location": "/salesDWH/dev/countryDim"
+      },
+      "product_dim": {
+        "db_name": "sales_dev",
+        "table_name": "product",
+        "table_location": "/salesDWH/dev/productDim"
+      },
+      "sales_detail": {
+        "db_name": "sales_dev",
+        "table_name": "sales",
+        "table_location": "/sourceData/sales.csv"
+      },
+      "agg_monthly_sales": {
+        "db_name": "sales_dev",
+        "table_name": "agg_monthly_sales",
+        "table_location": "/salesDWH/dev/salesMonthlyAggregatebyCustomer"
+      },
+      "job_metrics": {
+        "db_name": "sales_dev",
+        "table_name": "job_metrics",
+        "table_location": "/salesDWH/dev/job_metrics"
+      },
+      "sales_fact": {
+        "db_name": "sales_dev",
+        "table_name": "sales",
+        "table_location": "/salesDWH/dev/salesFact"
+      }
+    }
+  },
+  "sales_prod": {
+    "tables": {
+      "customer_detail": {
+        "db_name": "sales_prod",
+        "table_name": "customer",
+        "table_location": "/sourceData/customer.csv"
+      },
+      "customer_dim": {
+        "db_name": "sales_prod",
+        "table_name": "customer",
+        "table_location": "/salesDWH/prod/customerDim"
+      },
+      "product_detail": {
+        "db_name": "sales_prod",
+        "table_name": "product",
+        "table_location": "/sourceData/product.csv"
+      },
+      "month_dim": {
+        "db_name": "sales_prod",
+        "table_name": "product",
+        "table_location": "/sourceData/month.csv"
+      },
+      "transaction_threshold": {
+        "db_name": "sales_prod",
+        "table_name": "transactionThreshold",
+        "table_location": "/sourceData/transaction_threshold.csv"
+      },
+
+      "country_detail": {
+        "db_name": "sales_prod",
+        "table_name": "store_master",
+        "table_location": "/sourceData/prod/country_code.csv"
+      },
+      "country_dim": {
+        "db_name": "sales_prod",
+        "table_name": "store_master",
+        "table_location": "/salesDWH/prod/countryDim"
+      },
+      "product_dim": {
+        "db_name": "sales_prod",
+        "table_name": "product",
+        "table_location": "/salesDWH/prod/productDim"
+      },
+      "sales_detail": {
+        "db_name": "sales_prod",
+        "table_name": "sales",
+        "table_location": "/sourceData/sales.csv"
+      },
+      "agg_monthly_sales": {
+        "db_name": "sales_prod",
+        "table_name": "agg_monthly_sales",
+        "table_location": "/salesDWH/prod/salesFact"
+      },
+      "sales_fact": {
+        "db_name": "sales_prod",
+        "table_name": "sales",
+        "table_location": "/salesDWH/prod/salesFact"
+      }
+    }
+  },
+  "sales_dev_cloud": {
+    "tables": {
+      "customer_detail": {
+        "db_name": "sales_dev",
+        "table_name": "customer",
+        "table_location": "/sourceData/customer.csv"
+      },
+      "customer_dim": {
+        "db_name": "sales_dev",
+        "table_name": "customer",
+        "table_location": "/salesDWH/dev/customerDim"
+      },
+      "product_detail": {
+        "db_name": "sales_dev",
+        "table_name": "product",
+        "table_location": "/sourceData/product.csv"
+      },
+      "month_dim": {
+        "db_name": "sales_dev",
+        "table_name": "product",
+        "table_location": "/sourceData/month.csv"
+      },
+      "transaction_threshold": {
+        "db_name": "sales_dev",
+        "table_name": "transactionThreshold",
+        "table_location": "/sourceData/transaction_threshold.csv"
+      },
+
+      "country_detail": {
+        "db_name": "sales_dev",
+        "table_name": "store_master",
+        "table_location": "s3://tropical-palm/country_code.csv"
+      },
+      "country_dim": {
+        "db_name": "sales_dev",
+        "table_name": "store_master",
+        "table_location": "/salesDWH/dev/countryDim"
+      },
+      "product_dim": {
+        "db_name": "sales_dev",
+        "table_name": "product",
+        "table_location": "/salesDWH/dev/productDim"
+      },
+      "sales_detail": {
+        "db_name": "sales_dev",
+        "table_name": "sales",
+        "table_location": "/sourceData/sales.csv"
+      },
+      "agg_monthly_sales": {
+        "db_name": "sales_dev",
+        "table_name": "agg_monthly_sales",
+        "table_location": "/salesDWH/dev/salesMonthlyAggregatebyCustomer"
+      },
+      "job_metrics": {
+        "db_name": "sales_dev",
+        "table_name": "job_metrics",
+        "table_location": "/salesDWH/dev/job_metrics"
+      },
+      "sales_fact": {
+        "db_name": "sales_dev",
+        "table_name": "sales",
+        "table_location": "/salesDWH/dev/salesFact"
+      }
+    }
+  }
+}
