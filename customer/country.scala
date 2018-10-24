@@ -44,9 +44,6 @@ class country extends InitSpark {
     }
 
 
-
-
-
   println(s"input table path : $countrySourceDataPath")
   println(s"output table path : $countryDimSavePath")
 

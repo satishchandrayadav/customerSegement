@@ -1,7 +1,6 @@
 package com.mycompany.customer
 
 import com.mycompany.utils.InitSpark
-import org.apache.spark.sql.DataFrame
 
 class customer extends InitSpark {
 
@@ -27,7 +26,6 @@ class customer extends InitSpark {
   println(s"input table path : $customerSavePath")
 
 
-
   val jobMetricsWritePath = spark.read.option("multiline",true)
     .json("/customerSegment/src/main/scala/com/mycompany/config/customerConfig.json")
     .select(s"${deployment_environment}.tables.job_metrics.table_location")
@@ -35,9 +33,6 @@ class customer extends InitSpark {
     .collect()
     .mkString(" ")
     .replaceAll("[\\[\\]]","")
-
-
-  //    mailer.send(envelope)
 
 }
 
