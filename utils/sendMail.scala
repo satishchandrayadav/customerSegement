@@ -17,9 +17,9 @@ object sendMail {
     val address = "apachesparkforcoder@gmail.com"
     val username = "apachesparkforcoder@gmail.com"
 
-/*     val password = Source.fromFile(System.getProperty("user.home")
-        + "/authFile").getLines.mkString*/
-    val password = "Gobhi1950"
+     val password = Source.fromFile(System.getProperty("user.home")
+        + "/authFile").getLines.mkString
+
 
     val properties = new Properties()
     properties.put("mail.smtp.port", port)
