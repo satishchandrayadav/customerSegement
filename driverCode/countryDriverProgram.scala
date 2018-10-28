@@ -1,9 +1,8 @@
 package com.mycompany.drivercode
 
+import java.sql.Timestamp
 import com.mycompany.utils._
 import com.mycompany.country
-
-
 import scala.util.{Failure, Success, Try}
 
 
@@ -45,14 +44,15 @@ object countryDriverProgram {
 
         val writeCount = countrySourceData.count()
 
-        println(s"sat:${writeCount}")
+        val elapsedTime = jobStatistics.elapsedTime(countryObj.startDate :Timestamp)
 
-        val status = "S"
+       val status = "S"
 
         jobStatistics.getJobStatistics(programName: String, inputDataCount: Long, writeCount:
           Long, status: String,
           loadDate: String,
-          countryObj.jobMetricsWritePath: String)
+          countryObj.jobMetricsWritePath: String, countryObj.startDate :Timestamp, jobStatistics.endDate :Timestamp,
+          elapsedTime: String)
       }
 
     countryObjStatus match {
@@ -62,11 +62,13 @@ object countryDriverProgram {
         val status = "E"
 
         val insertCount = 0
+        val elapsedTime = jobStatistics.elapsedTime(countryObj.startDate :Timestamp)
 
         jobStatistics.getJobStatistics(programName: String, inputDataCount: Long, insertCount:
           Long, status: String,
           loadDate: String,
-          countryObj.jobMetricsWritePath: String)
+          countryObj.jobMetricsWritePath: String,  countryObj.startDate: Timestamp, jobStatistics.endDate :Timestamp,
+          elapsedTime: String)
 
       }
 

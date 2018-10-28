@@ -1,5 +1,7 @@
 package com.mycompany.drivercode
 
+import java.sql.Timestamp
+
 import com.mycompany.product
 import com.mycompany.utils._
 
@@ -26,14 +28,15 @@ object productDriverProgram {
 
       val writeCount = productSourceData.count()
 
+      val elapsedTime = jobStatistics.elapsedTime(productObj.startDate :Timestamp)
 
-      val status: String = "S"
-
+      val status = "S"
 
       jobStatistics.getJobStatistics(programName: String, inputDataCount: Long, writeCount:
         Long, status: String,
         loadDate: String,
-        productObj.jobMetricsWritePath: String)
+        productObj.jobMetricsWritePath: String, productObj.startDate :Timestamp, jobStatistics.endDate :Timestamp,
+        elapsedTime: String)
     }
 
     productObjStatus match {
@@ -43,12 +46,15 @@ object productDriverProgram {
 
         val status = "E"
 
-        var insertCount = 0
 
-        jobStatistics.getJobStatistics(programName: String, insertCount: Long, insertCount:
+        val insertCount = 0
+        val elapsedTime = jobStatistics.elapsedTime(productObj.startDate :Timestamp)
+
+        jobStatistics.getJobStatistics(programName: String, inputDataCount: Long, insertCount:
           Long, status: String,
           loadDate: String,
-          productObj.jobMetricsWritePath: String)
+          productObj.jobMetricsWritePath: String,  productObj.startDate: Timestamp, jobStatistics.endDate :Timestamp,
+          elapsedTime: String)
 
       }
 

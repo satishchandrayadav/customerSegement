@@ -1,5 +1,7 @@
 package com.mycompany.drivercode
 
+import java.sql.Timestamp
+
 import com.mycompany.sales
 import com.mycompany.utils.{jobStatistics, onJobFailedNotification, onJobSuccessNotification, utilToWriteToCSVwdHeader}
 import org.apache.spark.sql.DataFrame
@@ -35,15 +37,18 @@ object monthSalesDriverProgram {
       val customerSegmentbasedonTransac: DataFrame = salesObj.calculateCustomerSegmentBasedOnTransVolume()
       val writecustomerSegment = utilToWriteToCSVwdHeader.writeToCSV(customerSegmentbasedonTransac: DataFrame, salesObj.salesSavePath)
 
-      val insertCount = customerSegmentbasedonTransac.count()
+      val writeCount = customerSegmentbasedonTransac.count()
 
 
-      val status: String = "S"
+      val elapsedTime = jobStatistics.elapsedTime(salesObj.startDate :Timestamp)
 
-      jobStatistics.getJobStatistics(programName: String, inputDataCount: Long, insertCount:
+      val status = "S"
+
+      jobStatistics.getJobStatistics(programName: String, inputDataCount: Long, writeCount:
         Long, status: String,
         loadDate: String,
-        salesObj.jobMetricsWritePath: String)
+        salesObj.jobMetricsWritePath: String, salesObj.startDate :Timestamp, jobStatistics.endDate :Timestamp,
+        elapsedTime: String)
     }
 
     salesObjStatus match {
@@ -53,12 +58,14 @@ object monthSalesDriverProgram {
 
         val status = "E"
 
-        var insertCount = 0
+        val insertCount = 0
+        val elapsedTime = jobStatistics.elapsedTime(salesObj.startDate :Timestamp)
 
         jobStatistics.getJobStatistics(programName: String, inputDataCount: Long, insertCount:
           Long, status: String,
           loadDate: String,
-          salesObj.jobMetricsWritePath: String)
+          salesObj.jobMetricsWritePath: String,  salesObj.startDate: Timestamp, jobStatistics.endDate :Timestamp,
+          elapsedTime: String)
 
       }
 

@@ -1,5 +1,7 @@
 package com.mycompany.drivercode
 
+import java.sql.Timestamp
+
 import com.mycompany.customer.customer
 import com.mycompany.utils.{jobStatistics, onJobFailedNotification, onJobSuccessNotification, utilToWriteToCSVwdHeader}
 
@@ -30,12 +32,15 @@ object customerDriverProgram {
       val writeCustomerDim = utilToWriteToCSVwdHeader.writeToCSV(customerSourceData, customerObj.customerSavePath)
       val writeCount = customerSourceData.count()
 
+      val elapsedTime = jobStatistics.elapsedTime(customerObj.startDate :Timestamp)
+
       val status = "S"
 
       jobStatistics.getJobStatistics(programName: String, inputDataCount: Long, writeCount:
         Long, status: String,
         loadDate: String,
-        customerObj.jobMetricsWritePath: String)
+        customerObj.jobMetricsWritePath: String, customerObj.startDate :Timestamp, jobStatistics.endDate :Timestamp,
+        elapsedTime: String)
     }
     customerObjStatus match {
       case Failure(thrown) => {
@@ -44,12 +49,14 @@ object customerDriverProgram {
 
         val status = "E"
 
-        var insertCount = 0
+        val insertCount = 0
+        val elapsedTime = jobStatistics.elapsedTime(customerObj.startDate :Timestamp)
 
         jobStatistics.getJobStatistics(programName: String, inputDataCount: Long, insertCount:
           Long, status: String,
           loadDate: String,
-          customerObj.jobMetricsWritePath: String)
+          customerObj.jobMetricsWritePath: String,  customerObj.startDate: Timestamp, jobStatistics.endDate :Timestamp,
+          elapsedTime: String)
       }
 
       case Success(s) => {
