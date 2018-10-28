@@ -1,14 +1,13 @@
 package com.mycompany.utils
 
-import org.apache.log4j.{Level, LogManager, Logger}
+import org.apache.log4j.LogManager
 import org.apache.spark.scheduler.{SparkListenerStageCompleted, _}
-import org.apache.spark.sql.types._
-import org.apache.spark.sql.{DataFrame, Row, SparkSession}
-import java.util.{Calendar, Date, Properties}
+import org.apache.spark.sql.{DataFrame, SparkSession}
+import java.sql.Timestamp
 
 import org.apache.hadoop.yarn.util.RackResolver
 import org.apache.log4j.{Level, Logger}
-import org.apache.log4j.PropertyConfigurator
+
 
 trait InitSpark {
   val spark: SparkSession = SparkSession.builder()
@@ -18,6 +17,11 @@ trait InitSpark {
     /*Since Hive is not installed, this property is not required. */
     /*.enableHiveSupport() /*to enable support for Hive */ */
     .getOrCreate()
+
+
+  val startDate: Timestamp = new Timestamp(System.currentTimeMillis)
+
+  println(s"satishyadav:$startDate")
 
   /*
   PropertyConfigurator.configure("/root/spark-2.3.0-bin-hadoop2.7/conf/log4j.properties")
@@ -57,7 +61,7 @@ trait InitSpark {
 
   val sqlContext = spark.sqlContext
 
-  var startDate: Date = Calendar.getInstance().getTime
+
 
   sc.addSparkListener(new SparkListener() {
     override def onApplicationStart(applicationStart: SparkListenerApplicationStart) {
@@ -116,9 +120,6 @@ trait InitSpark {
     LogManager.getRootLogger.setLevel(Level.ERROR)
   }
 
-  /*
-    init
-  */
 
   def closeSpark = {
     spark.stop()
@@ -128,17 +129,6 @@ trait InitSpark {
     val sourceData = reader.csv(inputFile)
     sourceData.cache()
 
-  }
-
-
-  def elapsedTime = {
-    var endDate = Calendar.getInstance().getTime
-    var diff = endDate.getTime() - startDate.getTime()
-    var diffSeconds = diff / 1000 % 60
-    var diffMinutes = diff / (60 * 1000) % 60
-    var diffHours = diff / (60 * 60 * 1000) % 24
-    var diffDays = diff / (24 * 60 * 60 * 1000)
-    println(s"Time elapsed : ${diffDays} : ${diffHours} : ${diffMinutes} : ${diffSeconds}")
   }
 
 
