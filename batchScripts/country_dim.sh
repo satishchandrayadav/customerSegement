@@ -1,26 +1,36 @@
 #!/bin/bash
 
+deploy_env=$1
+
+if [[ deploy_env == 'sales_dev' || deploy_env == 'sales_prod' || deploy_env == 'sales_dev_cloud' || deploy_env == 'sales_prod_cloud' ]]; then
+    echo "Executing for parameter "$deploy_env
+else
+    echo "Invalid argument received"
+    echo "Valid parameters are : sales_dev,sales_prod,sales_dev_cloud,sales_prod_cloud"
+    exit -1
+fi
+
 #location of config file
 
 config_loc="/customerSegment/src/main/scala/com/mycompany/config/customerConfig.json"
 
 load_frequency==A
 
-if [[ $load_frequency==A && $(aws s3 ls s3://tropical-palm/sourceData/country_code1.csv) ]];then
+if [[ $load_frequency==A && $(aws s3 ls s3://tropical-palm/sourceData/country_code.csv) ]];then
 
 #get list of tables
 
-        table_list=$(cat /customerSegment/src/main/scala/com/mycompany/config/customerConfig.json | jq  '.sales_dev_cloud.tables | keys[]')
+        table_list=$(cat /customerSegment/src/main/scala/com/mycompany/config/customerConfig.json | jq  ".$deploy_env.tables | keys[]")
 
 
-        #get S3 path location
+        #get S3 path location & file existennce
 
-        S3_path=$(for i in $table_list; do cat $config_loc | jq -r ".sales_dev_cloud.tables.$i.table_location"; done;)
+        file_path=$(for i in $table_list; do cat $config_loc | jq -r ".$deploy_env.tables.$i.table_location"; done;)
 
 
         file_missing_counter=0
 
-        for i in $S3_path; do exists=$(aws s3 ls $i);
+        for i in $file_path; do exists=$(aws s3 ls $i);
         if [[ -z "$exists" ]];
         then echo "$i bucket does not exit";
            file_missing_counter=$((file_missing_counter+1));
